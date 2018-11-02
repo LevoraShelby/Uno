@@ -1,5 +1,9 @@
 package uno;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +20,7 @@ import uno.turns.PlayerTurns;
 public final class UnoGame {
 	private CardSystem cards;
 	private PlayerTurns turns;
+	private OutputStream[] playerSuitChoosers;
 
 	public UnoGame(int numPlayers) {
 		turns = new PlayerTurns(numPlayers);
@@ -35,10 +40,15 @@ public final class UnoGame {
 
 		//Creates Players for game.
 		Player[] players = new Player[numPlayers];
-		SuitChooser playersSuitChooser = new ScannerSuitChooser();
-		for(int playerNum = 0; playerNum < numPlayers; playerNum++) {
-			players[playerNum] = new Player(playersSuitChooser);
-		}
+		try {
+			for(int playerNum = 0; playerNum < numPlayers; playerNum++) {
+				PipedOutputStream writer = new PipedOutputStream();
+				PipedInputStream wildSuitStream = new PipedInputStream(writer);
+				writer.connect(wildSuitStream);
+				players[playerNum] = new Player(wildSuitStream);
+				playerSuitChoosers[playerNum] = writer;
+			}
+		} catch (IOException e) { e.printStackTrace(); }
 
 		//Initializes cards with gameCards and players.
 		Card[] deckCards = Arrays.copyOfRange(gameCards, 1, gameCards.length);
