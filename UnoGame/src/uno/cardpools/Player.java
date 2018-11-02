@@ -53,8 +53,8 @@ public class Player {
 		}
 		/**
 		 * Player removes the original Card from their hand and creates a new
-		 * Card with a color of colorChooser's choice, a rank of the original
-		 * Card's rank, and a wildness. It then plays the new Card on discard.
+		 * Card with a color of colorChooser's choice, the rank of the original
+		 * Card's rank, and wildness. It then plays the new Card on discard.
 		 */
 		else if (card.isWild()) {
 			try {
@@ -68,8 +68,7 @@ public class Player {
 	}
 
 	/**
-	 * Draws an <code>Card</code> from source and adds this <code>Card</code>
-	 * to its hand.
+	 * Draws an Card from source and adds this Card to its hand.
 	 * 
 	 * Note: This method should only be called if source has already been checked
 	 * for emptiness. It is not the Player's responsibility to check for
