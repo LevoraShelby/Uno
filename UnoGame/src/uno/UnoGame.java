@@ -59,15 +59,6 @@ public final class UnoGame {
 
 
 	/**
-	 * The current player draws a Card and ends their turn.
-	 */
-	public void pass() {
-		cards.drawCard(turns.currentTurnIndex());
-		turns.endTurn();
-	}
-
-
-	/**
 	 * Plays the Card associated with the cardNum of the current Player.
 	 * @param cardNum
 	 */
@@ -79,7 +70,10 @@ public final class UnoGame {
 
 	
 	private void executeCard(Card playedCard) {
-		if(playedCard.rank() == 10) {
+		if(playedCard.rank() >= 0 && playedCard.rank() <= 9) {
+			turns.endTurn();
+		}
+		else if(playedCard.rank() == 10) {
 			turns.skip();
 		}
 		else if(playedCard.rank() == 11) {
@@ -98,10 +92,16 @@ public final class UnoGame {
 		else if(playedCard.rank() == 14) {
 			cards.drawCards(turns.relativeTurnIndex(1), 4);
 			turns.skip();
-		}
-		else {
-			turns.endTurn();
-		}		
+		}	
+	}
+
+
+	/**
+	 * The current player draws a Card and ends their turn.
+	 */
+	public void pass() {
+		cards.drawCard(turns.currentTurnIndex());
+		turns.endTurn();
 	}
 
 
