@@ -16,12 +16,10 @@ import uno.Card;
 public class Player {
 	protected final List<Card> hand;
 	protected InputStream colorChooser;
-	protected boolean lastCardPlayed;
 
 	public Player(List<Card> cards, InputStream colorChooser) {
 		hand = new ArrayList<Card>(cards);
 		this.colorChooser = colorChooser;
-		lastCardPlayed = false;
 	}
 	public Player(InputStream colorChooser) {
 		this(new ArrayList<Card>(), colorChooser);
@@ -32,7 +30,6 @@ public class Player {
 	public Player(Player player) {
 		hand = player.hand;
 		colorChooser = player.colorChooser;
-		lastCardPlayed = false;
 	}
 
 	public Card[] cards() {
@@ -40,10 +37,9 @@ public class Player {
 	}
 
 	/**
-	 * Player removes the <code>Card</code> in its hand at the index of
-	 * cardNum, and then plays an <code>Card</code> to rules. If the
-	 * <code>Card</code> isn't wild, it just plays it to rules. If it is
-	 * wild, if plays a replicate <code>Card</code> with wildCC's choice of
+	 * Player removes the Card in its hand at the index of cardNum, and then
+	 * plays a Card to discard. If the Card is wild the Player plays a replicate
+	 * Card with the suit matching that of the colorChooser's next byte.
 	 * suit to rules.
 	 * @param cardNum
 	 * @param discard
@@ -54,38 +50,21 @@ public class Player {
 		if(!card.isWild()) {
 			hand.remove(cardNum);
 			discard.discard(card);
-			lastCardPlayed = true;
 		}
 		/**
 		 * Player removes the original Card from their hand and creates a new
 		 * Card with a color of colorChooser's choice, a rank of the original
 		 * Card's rank, and a wildness. It then plays the new Card on discard.
-		 * If the colorChooser returns an unusable result, nothing is done and
-		 * lastCardPlayed is set to false instead of true.
 		 */
 		else if (card.isWild()) {
 			try {
-				int suit = colorChooser.read();
-				if(suit >= 1 && suit <= 4) { //can return -1 if color isn't chosen.
-					hand.remove(cardNum);
-					card = new Card(suit, card.rank(), true);
-					discard.discard(card);
-					lastCardPlayed = true;
-				} else {
-					lastCardPlayed = false;
-				}
+				hand.remove(cardNum);
+				card = new Card(colorChooser.read(), card.rank(), true);
+				discard.discard(card);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	/**
-	 * @return true if the last call of the playCard() method actually played
-	 * a Card.
-	 */
-	public boolean wasLastCardPlayed() {
-		return lastCardPlayed;
 	}
 
 	/**
