@@ -50,7 +50,7 @@ public final class UnoGame {
 			}
 		} catch (IOException e) { e.printStackTrace(); }
 
-		//Initializes cards with Cards and Players.
+		//Initializes the game's Cards and Players.
 		Card[] deckCards = Arrays.copyOfRange(gameCards, 1, gameCards.length);
 		Card topCard = gameCards[0];
 		cards = new CardSystem(players, deckCards, topCard);
