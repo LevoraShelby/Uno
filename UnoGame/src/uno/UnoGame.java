@@ -64,6 +64,11 @@ public final class UnoGame {
 	 */
 	public void playCard(int cardNum) {
 		Card playedCard = cards.playerCards(turns.currentTurnIndex())[cardNum];
+		if(!matchesTopCard(playedCard)) {
+			throw new RuntimeException(
+				"Card does not match with the game's top card."
+			);
+		}
 		cards.playCard(turns.currentTurnIndex(), cardNum);
 		executeCard(playedCard);
 	}
@@ -93,6 +98,14 @@ public final class UnoGame {
 			cards.drawCards(turns.relativeTurnIndex(1), 4);
 			turns.skip();
 		}	
+	}
+
+
+	private boolean matchesTopCard(Card cardToMatch) {
+		Card topCard = cards.topCard();
+		boolean matchesRank = topCard.rank() == cardToMatch.rank();
+		boolean matchesSuit = topCard.suit() == cardToMatch.suit();
+		return matchesRank || matchesSuit;
 	}
 
 
