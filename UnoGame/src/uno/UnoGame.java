@@ -92,7 +92,7 @@ public final class UnoGame {
 		else if(playedCard.rank() == 14) {
 			cards.drawCards(turns.relativeTurnIndex(1), 4);
 			turns.skip();
-		}.	
+		}	
 	}
 
 
