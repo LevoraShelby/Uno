@@ -1,11 +1,11 @@
 package uno.cardpools;
 
+import java.io.PipedInputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Scanner;
 
 import uno.Card;
-import uno.ScannerSuitChooser;
 
 /**
  * Represents a system of Cards in a standard Uno game.
@@ -112,7 +112,7 @@ public class CardSystem {
 		//Build players
 		Player[] players = new Player[3];
 		for(int numPlayer = 0; numPlayer < players.length; numPlayer++) {
-			players[numPlayer] = new Player(new ScannerSuitChooser());
+			players[numPlayer] = new Player(new PipedInputStream());
 		}
 
 		//Makes cardSystem
