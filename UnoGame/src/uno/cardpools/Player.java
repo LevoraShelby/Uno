@@ -11,11 +11,15 @@ import uno.Card;
 /**
  * A Player represents the player of a game involving Cards where Cards are
  * played to a Discard.
+ * 
+ * @Contract The passed InputStream isn't to be read by clients. They should
+ * only write to its stream.
+ * 
  * @author trevor
  */
 public class Player {
 	protected final List<Card> hand;
-	protected InputStream wildSuitChooser;
+	protected final InputStream wildSuitChooser;
 
 	public Player(List<Card> cards, InputStream wildSuitChooser) {
 		hand = new ArrayList<Card>(cards);
