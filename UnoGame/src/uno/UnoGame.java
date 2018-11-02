@@ -20,7 +20,7 @@ import uno.turns.PlayerTurns;
 public final class UnoGame {
 	private CardSystem cards;
 	private PlayerTurns turns;
-	private OutputStream[] playerSuitChoosers;
+	private OutputStream[] wildSuitChoosers;
 
 	public UnoGame(int numPlayers) {
 		turns = new PlayerTurns(numPlayers, numPlayers - 1);
@@ -46,7 +46,7 @@ public final class UnoGame {
 				PipedInputStream wildSuitStream = new PipedInputStream(writer);
 				writer.connect(wildSuitStream);
 				players[playerNum] = new Player(wildSuitStream);
-				playerSuitChoosers[playerNum] = writer;
+				wildSuitChoosers[playerNum] = writer;
 			}
 		} catch (IOException e) { e.printStackTrace(); }
 
@@ -119,10 +119,14 @@ public final class UnoGame {
 
 
 	/**
-	 * @return the index of the current Player.
+	 * @return the index of the current Player's turn.
 	 */
-	public int currentPlayer() {
+	public int currentTurn() {
 		return turns.currentTurnIndex();
+	}
+
+	public OutputStream wildSuitChoosers(int playerNum) {
+		return wildSuitChoosers[playerNum];
 	}
 
 
