@@ -16,6 +16,11 @@ implements Skippable, Reversible {
 		turnIndex = 0;
 		reversed = false;
 	}
+	public PlayerTurns(int numPlayers, int turnNum) {
+		this.numPlayers = numPlayers;
+		turnIndex = turnNum;
+		reversed = false;
+	}
 
 
 	/**

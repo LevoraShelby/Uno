@@ -23,7 +23,7 @@ public final class UnoGame {
 	private OutputStream[] playerSuitChoosers;
 
 	public UnoGame(int numPlayers) {
-		turns = new PlayerTurns(numPlayers);
+		turns = new PlayerTurns(numPlayers, numPlayers - 1);
 
 		Card[] gameCards = buildCards();
 		shuffle(gameCards);
@@ -50,30 +50,11 @@ public final class UnoGame {
 			}
 		} catch (IOException e) { e.printStackTrace(); }
 
-		//Initializes cards with gameCards and players.
+		//Initializes cards with Cards and Players.
 		Card[] deckCards = Arrays.copyOfRange(gameCards, 1, gameCards.length);
 		Card topCard = gameCards[0];
 		cards = new CardSystem(players, deckCards, topCard);
-		executeZerothCard(topCard);
-	}
-
-
-	private void executeZerothCard(Card zerothCard) {
-		if(zerothCard.rank() == 10) {
-			turns.endTurn();
-		}
-		else if(zerothCard.rank() == 11) {
-			if(cards.numPlayers() > 2) {
-				turns.reverse();
-			}
-			else if(cards.numPlayers() == 2) {
-				turns.endTurn();
-			}
-		}
-		else if(zerothCard.rank() == 12) {
-			cards.drawCard(turns.currentTurnIndex());
-			turns.endTurn();
-		}
+		executeCard(topCard);
 	}
 
 
@@ -93,7 +74,11 @@ public final class UnoGame {
 	public void playCard(int cardNum) {
 		Card playedCard = cards.playerCards(turns.currentTurnIndex())[cardNum];
 		cards.playCard(turns.currentTurnIndex(), cardNum);
+		executeCard(playedCard);
+	}
 
+	
+	private void executeCard(Card playedCard) {
 		if(playedCard.rank() == 10) {
 			turns.skip();
 		}
@@ -116,7 +101,7 @@ public final class UnoGame {
 		}
 		else {
 			turns.endTurn();
-		}
+		}		
 	}
 
 
