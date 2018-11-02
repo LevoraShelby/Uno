@@ -15,21 +15,21 @@ import uno.Card;
  */
 public class Player {
 	protected final List<Card> hand;
-	protected InputStream colorChooser;
+	protected InputStream wildSuitChooser;
 
-	public Player(List<Card> cards, InputStream colorChooser) {
+	public Player(List<Card> cards, InputStream wildSuitChooser) {
 		hand = new ArrayList<Card>(cards);
-		this.colorChooser = colorChooser;
+		this.wildSuitChooser = wildSuitChooser;
 	}
-	public Player(InputStream colorChooser) {
-		this(new ArrayList<Card>(), colorChooser);
+	public Player(InputStream wildSuitChooser) {
+		this(new ArrayList<Card>(), wildSuitChooser);
 	}
-	public Player(Card[] cards, InputStream colorChooser) {
-		this(Arrays.asList(cards), colorChooser);
+	public Player(Card[] cards, InputStream wildSuitChooser) {
+		this(Arrays.asList(cards), wildSuitChooser);
 	}
 	public Player(Player player) {
 		hand = player.hand;
-		colorChooser = player.colorChooser;
+		wildSuitChooser = player.wildSuitChooser;
 	}
 
 	public Card[] cards() {
@@ -38,9 +38,10 @@ public class Player {
 
 	/**
 	 * Player removes the Card in its hand at the index of cardNum, and then
-	 * plays a Card to discard. If the Card is wild the Player plays a replicate
-	 * Card with the suit matching that of the colorChooser's next byte.
-	 * suit to rules.
+	 * plays a Card to discard. If the Card is wild the Player plays a
+	 * replicate Card with the suit matching that of the wildSuitChooser's next
+	 * byte.
+	 * 
 	 * @param cardNum
 	 * @param discard
 	 */
@@ -53,13 +54,22 @@ public class Player {
 		}
 		/**
 		 * Player removes the original Card from their hand and creates a new
-		 * Card with a color of colorChooser's choice, the rank of the original
-		 * Card's rank, and wildness. It then plays the new Card on discard.
+		 * Card with a color of wildSuitChooser's choice, the rank of the
+		 * original Card's rank, and wildness. It then plays the new Card on
+		 * discard.
 		 */
 		else if (card.isWild()) {
 			try {
+				int suit = wildSuitChooser.read();
+
+				if(suit == -1) {
+					throw new RuntimeException(
+							"Player was not given a suit to play."
+					);
+				}
+
 				hand.remove(cardNum);
-				card = new Card(colorChooser.read(), card.rank(), true);
+				card = new Card(wildSuitChooser.read(), card.rank(), true);
 				discard.discard(card);
 			} catch (IOException e) {
 				e.printStackTrace();
